@@ -1,4 +1,4 @@
-https://groups.google.com/g/innosetup/c/XRqmCxUtlE4/m/EOkCd3OKBAAJ
+// https://groups.google.com/g/innosetup/c/XRqmCxUtlE4/m/EOkCd3OKBAAJ
 
 [Setup]
 AppName=FileCopyAlernative-TFileStream
