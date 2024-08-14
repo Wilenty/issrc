@@ -9,9 +9,14 @@ https://groups.google.com/g/innosetup/c/XRqmCxUtlE4/m/P-2oPhAPBQAJ
 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 😂 🤣 
 
 https://github.com/jrsoftware/issrc/blob/is-5_6_1/Projects/ScriptFunc_R.pas#L544
+
 https://github.com/jrsoftware/issrc/blob/is-6_0_5/Projects/ScriptFunc_R.pas#L531
+
 https://github.com/jrsoftware/issrc/blob/is-6_2_2/Projects/ScriptFunc_R.pas#L581
+
 https://github.com/jrsoftware/issrc/blob/is-6_3_3/Projects/Src/ScriptFunc_R.pas#L556
+
+
 
 https://github.com/jrsoftware/issrc/blob/34875cb7e5021d97c88f6f2e9f48b8109090e124/Projects/Src/Setup.ScriptFunc.pas#L115
 OR
