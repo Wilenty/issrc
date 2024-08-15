@@ -21,6 +21,7 @@ begin
       lDest:= TFileStream.Create(ADest, fmCreate);
       try
         lSize := lSrc.Size;
+// Future fix by Wilenty
 #If ver >= 0x06040000
         lDest.CopyFrom(lSrc, lSize, lSize);
 #Else
@@ -46,5 +47,5 @@ Function InitializeSetup: Boolean;
 // https://github.com/jrsoftware/issrc/blob/is-6_3_3/Projects/Src/ScriptFunc_R.pas#L556
 //    FileCopy( ExpandConstant('{srcexe}'), ExpandConstant('{srcexe}')+'.1', False );
 
-    FileCopyAlernative( ExpandConstant('{srcexe}'), ExpandConstant('{srcexe}')+'.1' );
+    FileCopyWithTFileStream( ExpandConstant('{srcexe}'), ExpandConstant('{srcexe}')+'.1' );
 end;
