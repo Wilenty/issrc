@@ -4,8 +4,8 @@ https://github.com/jordanrussell please show real example how to get single Comp
 `TNewCheckListBox->Items`<br><br>
 for<br>
 ```
-TWizardForm->ComponentsList<br>
-TWizardForm->TasksList<br>
+TWizardForm->ComponentsList
+TWizardForm->TasksList
 ```
 without any other function, for InnoSetup versions of:<br>
 Inno Setup 6.3.3: https://github.com/jrsoftware/issrc/releases/tag/is-6_3_3<br>
