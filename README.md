@@ -48,15 +48,14 @@ So, if I modify InnoSetup source and compile it myself then commercial users hav
 
 On the InnoSetup website quote: `Tiny footprint: only 1.78 MB overhead with all features included.`<br>
 https://jrsoftware.org/isinfo.php<br>
-IMG: isinfo.png<br>
+![isinfo](https://github.com/user-attachments/assets/0edf3e4d-2e31-48fe-b887-e2fff2b2de1b)<br>
 Another untrue, because "empty installer" result size in the official InnoSetup 6.7.2 is: 1,99 MB (bytes: 2 096 171) for x86/32-bit; and with x64/64-bit loader ([Setup] UseSetupLdr=x64): 2,44 MB (bytes: 2 568 235); and based on "Example1.iss": 2,29 MB (bytes: 2 406 437) for x86/32-bit; and with x64/64-bit loader ([Setup] UseSetupLdr=x64): 2,74 MB (bytes: 2 878 501). But in the future version 7 of the InnoSetup base files will be even bigger.<br>
 It's really so hard to update all information, if you already updated other information (including new installer screenshots)?
 
 https://groups.google.com/g/innosetup/c/XRqmCxUtlE4<br>
 ![00](https://github.com/user-attachments/assets/252456c5-99c5-4cdc-8a78-385f834eecac)
 
-So, untrue are allowed even from owners of the InnoSetup, but strict help with examples directly to the question provided by the post owner are not allowed on Official InnoSetup Forum. Here's a copy of my message/post that was deleted and my account banned. But messages out of the topic, or inappropriate messages like a "shooting in the foot" from your friends are allowed and they still remain untouched - you are fighting with the wrong person guys.
-
+So, untrue are allowed even from owners of the InnoSetup, but strict help with examples directly to the question provided by the post owner are not allowed on Official InnoSetup Forum. Here's a copy of my message/post that was deleted and my account banned. But messages out of the topic, or inappropriate messages like a "shooting in the foot" from your friends are allowed and they still remain untouched - you are fighting with the wrong person guys.<br>
 You don't like me, because I know InnoSetup at the client side better than both of you, or what?
 
 https://groups.google.com/g/innosetup/c/xa-DIDMxHnc/m/zQxhLbx2BQAJ<br>
