@@ -1,6 +1,6 @@
 # Public message to InnoSetup owners (only): @jordanrussell & @martijnlaan (messages from other users will be deleted, and their accounts will be banned, because I'd like to avoid any pointless discussions)
 
-@jordanrussell please show real example how to get single Component/Task name directly from this class of pascal:<br><br>
+https://github.com/jordanrussell please show real example how to get single Component/Task name directly from this class of pascal:<br><br>
 `TNewCheckListBox->Items`<br><br>
 for<br>
 ```
@@ -21,7 +21,7 @@ https://github.com/Wilenty/VisualC-redist-installers-Demos<br>
 *I only recompiled it to include the TGroupBox class, because even of many requests on official InnoSetup forum you not wiling to include it, but you were added the VclStyles classes that few people uses, but VclStyles classes significantly swelling installer base files.*<br>
 So, it's a untrue and you even don't know how your product works at the client side.
 
-@martijnlaan<br>
+https://github.com/martijnlaan<br>
 `Please note that our request for commercial users to purchase a license applies regardless of version, so the statement above is not correct.`<br>
 https://groups.google.com/g/innosetup/c/ZKOt0i4H3c8/m/WHITIgGRAgAJ<br>
 ![martijnlaan](https://github.com/user-attachments/assets/df9159e4-74d8-489c-83ec-40421f83d49c)<br>
