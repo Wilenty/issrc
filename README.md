@@ -1,140 +1,392 @@
-# Public message to InnoSetup owners (only): @jordanrussell & @martijnlaan (messages from other users will be deleted, and their accounts will be banned, because I'd like to avoid any pointless discussions)
+Inno Setup
+==========
 
-https://github.com/jordanrussell please show real example how to get single Component/Task name directly from this class of pascal:<br><br>
-`TNewCheckListBox->Items`<br><br>
-for<br>
+Copyright (C) 1997-2026 Jordan Russell. All rights reserved.  
+Portions Copyright (C) 2000-2026 Martijn Laan. All rights reserved.  
+For conditions of distribution and use, see LICENSE.TXT.
+
+Source code README
+
+Getting Started
+---------------
+
+1. **Obtain sources**
+
+    First you need to download the sources from Github. From the command line do:
+
+    ```
+    > git clone https://github.com/jrsoftware/issrc.git issrc
+    > cd issrc
+    ```
+
+    If you don't have the Git client (`git`), get it from:
+
+    https://git-scm.com/
+
+    To update your sources from the command line do:
+    ```
+    > git pull
+    ```
+
+    To be able to contribute to Inno Setup, clone your own fork instead of
+    cloning the main Inno Setup repository, commit your work on topic branches
+    and make pull requests. See [CONTRIBUTING.md].
+
+
+2. **Install Embarcadero Delphi**
+
+   We compile all of Inno Setup's projects under Delphi 12.3 Athens with the
+   May Patch installed.
+
+   There's a free version of Delphi available called the Community Edition.
+   See https://www.embarcadero.com/products/delphi/starter/free-download.
+
+   After installation of Delphi, you must install GetIt dependencies by
+   running **getit.bat** and following the instructions.
+
+3. **Install Microsoft HTML Help Workshop**
+
+   Install Microsoft HTML Help Workshop if you haven't already done so.
+   See https://docs.microsoft.com/en-us/previous-versions/windows/desktop/htmlhelp/microsoft-html-help-downloads and
+   http://web.archive.org/web/20160201063255/http://download.microsoft.com/download/0/A/9/0A939EF6-E31C-430F-A3DF-DFAE7960D564/htmlhelp.exe
+
+   Note: Microsoft HTML Help Workshop is only needed to be able to compile the
+   help file.
+
+
+4. **Build Inno Setup**
+
+   Unfortunately, Embarcadero has removed command-line compilation support
+   from the Community Edition, which means there's two different build
+   scripts.
+
+   Community Edition: To build all files in Release mode run **build-ce.bat**
+   and follow the instructions.
+
+   Otherwise: To build all files in Release mode run **build.bat** and follow
+   the instructions.
+
+   To just compile 64-bit Inno Setup in Release mode run **compile.bat x64**
+   and follow the instructions. Run **compile.bat x86** for 32-bit Inno Setup.
+   To compile just one project, append its project name, for example
+   **compile.bat x64 ISCC**. These batch files cannot be used with the
+   Community Edition, open Projects\Projects.groupproj instead.
+
+   To just compile the Inno Setup help file and its web version run
+   **compile.bat x64 ISHelpGen** and **ISHelp\compile.bat** and follow the
+   instructions. The former batch file cannot be used with the
+   Community Edition, open Projects\Projects.groupproj instead.
+
+
+Component Installation
+----------------------
+
+If you intend to view or modify the Setup project's forms, you must install
+the following component units, which can be found in the [Components]
+directory.
+
+- BitmapButton
+- BitmapImage
+- FolderTreeView
+- NewCheckListBox
+- NewCtrls
+- NewNotebookReg
+- NewProgressBar
+- NewStaticText
+- PasswordEdit
+- RichEditViewer
+
+If you intend to view or modify the ISIDE project's forms, you must
+additionally install the following components.
+
+- DropListBox
+- NewGroupBox
+- NewTabSet
+
+The [Components] directory contains a Components.dpk file which you can use to
+install all these components.
+
+If you only want to edit code, then you may skip installation of the
+components, and choose "Cancel" if the Delphi IDE tells you a class can't
+be found.
+
+The [Components] directory also includes various units that are not
+installable components; however, they are still considered components
+because they can function independently from Inno Setup.
+
+Overview
+--------
+
+Inno Setup consists of nine projects:
+
+**ISIDE** - This is the GUI front-end for the compiler, also known as
+the Compiler IDE. ISIDE does not do the actual compilation itself; it
+relegates it to ISCmplr.dll. If the ISCmplr project is changed, you
+normally don't need to recompile ISIDE since it's essentially a text
+editor, and is not affected by internal changes to the compiler.
+
+**ISCC** - This is the command-line front-end to the compiler. Like
+ISIDE, it depends on ISCmplr.dll to do the actual compiling.
+
+**ISCmplr** - This is a DLL which is loaded by ISIDE and ISCC to compile
+scripts. The actual compiler code is in Compiler.SetupCompiler.pas. See
+Shared.CompInt.pas for the various structures and function declarations used
+to interface to the DLL.
+
+**ISPP** - This is a DLL implementing Inno Setup's preprocessor interface.
+
+**Setup** - This is the actual "Setup" program. It displays the wizard, and
+performs all (un)installation-related tasks.
+
+**SetupCustomStyle** - Identical to Setup, except that it includes code to
+support VCL Styles.
+
+**SetupLdr** - This is the "setup loader." It self-extracts a compressed
+Setup program into the user's TEMP directory and runs it from there. It also
+displays the "This will install..." and /HELP message boxes.
+
+**ISSigTool** - This is a command-line utility which can be used to sign and verify
+any of your files. ISIDE, ISCC, and ISCmplr use these signatures to verify the
+authenticity of a number of DLL, E32, E64, and EXE files before loading them. Note: this
+utility does not replace Microsoft's signtool.exe in any way and is in fact not
+related to Authenticode Code Signing at all.
+
+**ISTestTool** - This is an internal command-line utility which runs unit tests.
+It is run automatically by **build.bat** and **build-ce.bat** after compilation,
+and exits with a non-zero exit code as soon as a test fails. Does not use a
+testing framework. Run **test.bat** to compile and run the tests manually.
+
+How do the projects link together?
+
+- ISIDE, ISCmplr, ISPP, Setup, SetupCustomStyle, and SetupLdr share the unit
+  Shared.Struct.pas. This unit contains various data structures and constants
+  shared by the projects. If Shared.Struct.pas is changed, you usually will need
+  to recompile all these projects and the required targets using the Release64 or
+  Debug64 build group so that everything is in synch.
+
+- There are more units which are shared between projects. Search the .dpr
+  files of the projects if you aren't sure if a project uses a particular
+  unit.
+
+Source code tips
+----------------
+
+- When building the projects in Release mode, it outputs to [Files]. Before
+  running ISIDE, ensure that all .issig files are up to date. Use the
+  Release64 build group to ensure all required targets are built.
+
+- You can open the Build Groups pane from the Projects tool window.
+
+- When building the projects in Debug mode, it outputs to [Projects\Bin] and when
+  debugging, it will run from within this directory. To prepare this directory
+  with some extra files you must run **Projects\Bin\synch-isfiles.bat**. Running
+  the aforementioned **build.bat** or **build-ce.bat** first is not necessary.
+
+- To debug the Setup project, you should first build the Debug64 build group,
+  then run the ISIDE project and compile the Debug.iss script which
+  should open automatically, and finally open and run the Setup project.
+  This way you can simulate an actual installation while running under the
+  Delphi debugger. To be able to run [Code] this way, the SetupArchitecture
+  setting of the test script should match the target of the Setup project.
+
+- To debug the SetupLdr project, first build the Debug64 build group and compile
+  the Debug.iss script as explained above, except with the `UseSetupLdr=no` line
+  set to `yes`. Then open and run the SetupLdr project with a 32-bit or 64-bit
+  target (latter does not require using `UseSetupLdr=x64`). It will automatically
+  set a special debug-only `/SELFFILENAME=Setup.exe` command-line parameter,
+  which will cause it to load and run the Setup.exe you just compiled using
+  ISIDE, instead of the SetupLdr.e32 or .e64 just compiled by Delphi.
+
+- To debug the uninstaller first run Setup.exe to completion with the
+  `/DETACHEDMSG` command-line parameter set. Afterwards copy uninst000.dat and
+  uninst000.msg as setup.dat and setup.msg to the [Projects\Bin] directory in your
+  issrc path. Then open the Setup project and set the command-line parameters to
+  `/UNINSTMODE /KEEPEXEDATMSG "/SECONDPHASE=<your issrc path\Projects\Bin\Setup.exe"` and start
+  debugging.
+
+- All of the forms in the Setup project have Scaled set to False. This is
+  because they dynamically scale themselves at run-time by calling a function
+  named InitializeFont.
+
+- A note for those curious: ISIDE creates single exe Setups by first creating
+  the Setup.exe as usual, then concatenating the Setup.0 and Setup-1.bin to the
+  end of the Setup.exe, and finally modifying an internal data block in Setup.exe
+  so it knows it's in "single exe" form.
+
+
+
+Precompiled executables and libraries
+-------------------------------------
+
+The source code contains several precompiled and code-signed executables and libraries:
+
+**Files\is7z(-x64).dll**, **Files\is7zxa(-x64).dll**, **Files\is7zxr(-x64).dll** - Compiled by
+Visual Studio 2022 from 7-Zip source code in the [is7z] repository. Used by Setup.
+
+**Files\isbunzip(-x64).dll**, **Files\isbzip(-x64).dll** - Compiled by Visual Studio 2022
+from the bzlib directory in the [iscompress] repository. Used by Setup and ISCmplr respectively.
+
+**Files\isunzlib(-x64).dll**, **Files\iszlib(-x64).dll** - Compiled by Visual Studio 2022
+from the zlib directory in the [iscompress] repository. Used by Setup and ISCmplr respectively.
+
+**Files\islzma(-x64|-Arm64EC).dll**, **Files\islzma32.exe**, **Files\islzma64.exe** - Compiled
+by Visual Studio 2022 from the [Projects\Src\Compression.LZMACompressor\islzma] directory.
+Used by ISCmplr.
+
+**Files\isscint(-x64).dll** - Compiled by Visual Studio 2022 from Scintilla source
+code in the [isscint] repository. Used by ISIDE.
+
+**Projects\Src\Compression.LZMADecompressor\Lzma2Decode\ISLzmaDec(-x86|-x64).obj** -
+Compiled by Visual Studio 2022 from the [Projects\Src\Compression.LZMADecompressor\Lzma2Decode]
+directory. Used by Setup.
+
+**Projects\Src\Compression.LZMA1SmallDecompressor\LzmaDecode\LzmaDecodeInno(-x86|-x64).obj** -
+Compiled by Visual Studio 2022 from the [Projects\Src\Compression.LZMA1SmallDecompressor\LzmaDecode]
+directory. Used by SetupLdr.
+
+**Projects\Src\Compression.SevenZipDecoder\7zDecode\IS7zDec(-x86|-x64).obj** -
+Compiled by Visual Studio 2022 from the [Projects\Src\Compression.SevenZipDecoder\7zDecode]
+directory. Used by Setup.
+
+**Examples\MyDll(-x64).dll** - Compiled by Delphi 12.3 Athens from the [Examples\MyDll\Delphi]
+directory. Example file, not used by any project.
+
+**Examples\MyProg(-x64|-Arm64).exe** - Compiled by Visual Studio 2022 from the [Examples\MyProg]
+directory. Example file, not used by any project.
+
+Each precompiled file is accompanied by an .issig signature file, and can be
+verified using Inno Setup Signature Tool and [this public key file].
+
+To build all these files except the MyDll and MyProg example files, run
+**build-precomp.bat** and follow the instructions. Requires a checkout of the
+aforementioned repositories. Does NOT update .issig files.
+
+Inno Setup-specific editing guidelines for the help files
+---------------------------------------------------------
+
+- When mentioning something the user would type in a script, e.g. "MinVersion",
+  surround it by `<tt></tt>` so that it's displayed in a monospaced font. This is
+  a convention used throughout the help file. Example: `<tt>MinVersion</tt>`
+
+Setting up Continuous Integration
+---------------------------------
+
+Inno Setup's source code includes a GitHub workflow named **build.yml** that
+performs unattended builds upon `push` events, it requires some setting up, though.
+
+Note: The following instructions assume that you have a correctly-licensed version
+of Delphi installed and ran **getit.bat** as mentioned above. Your Delphi version
+may not be a Community Edition because it does not support command-line compilation.
+Also ensure your current Delphi license still allows you to copy a subset of the
+Delphi files to another machine for the specific purpose of supporting unattended
+builds.
+
+First, run **rsvars.bat** from your Delphi Bin directory and then in the same session
+generate an encrypted `.zip` file containing the files needed to build Inno Setup
+using [7-Zip]:
+
 ```
-TWizardForm->ComponentsList
-TWizardForm->TasksList
+cd /d "%BDS%"
+"%ProgramFiles%\7-Zip\7z.exe" a -mx9 -mem=AES256 -p"<password>" ^
+  %USERPROFILE%\issrc-build-env.zip ^
+  bin\dcc32.exe bin\rlink32.dll bin\lnk*.dll ^
+  lib\win32\release\Sys*.dcu lib\win32\release\*.res ^
+  lib\win32\release\System.*.dcu lib\win32\release\System.Generics.*.dcu ^
+  lib\win32\release\System.Internal.*.dcu lib\win32\release\System.Net.*.dcu ^
+  lib\win32\release\System.Net.HttpClient.*.dcu lib\win32\release\System.Win.*.dcu ^
+  lib\win32\release\Vcl.*.dcu lib\win32\release\Vcl.Imaging.*.dcu ^
+  lib\win32\release\Winapi.*.dcu ^
+  bin\dcc64.exe ^
+  lib\win64\release\Sys*.dcu lib\win64\release\*.res ^
+  lib\win64\release\System.*.dcu lib\win64\release\System.Generics.*.dcu ^
+  lib\win64\release\System.Internal.*.dcu lib\win64\release\System.Net.*.dcu ^
+  lib\win64\release\System.Net.HttpClient.*.dcu lib\win64\release\System.Win.*.dcu ^
+  lib\win64\release\Vcl.*.dcu lib\win64\release\Vcl.Imaging.*.dcu ^
+  lib\win64\release\Winapi.*.dcu ^
+  bin\cgrc.exe bin\lnkdfm*.dll bin\rc.exe bin\RcDLL.dll ^
+  bin\Borland.Build.Tasks.Common.dll bin\Borland.Build.Tasks.Delphi.dll bin\Borland.Build.Tasks.Shared.dll bin\Borland.Globalization.dll ^
+  bin\CodeGear.Common.targets bin\CodeGear.Delphi.Targets bin\CodeGear.Group.Targets bin\CodeGear.Profiles.Targets
+cd /d "%BDSCOMMONDIR%"
+"%ProgramFiles%\7-Zip\7z.exe" a -mx9 -mem=AES256 -p"<password>" ^
+  %USERPROFILE%\issrc-build-env.zip ^
+  Styles\SlateClassico.vsf ^
+  Styles\Windows11_Modern_Dark.vsf ^
+  Styles\Windows11_Modern_Light.vsf ^
+  Styles\Windows11_Polar_Dark.vsf ^
+  Styles\Windows11_Polar_Light.vsf ^
+  Styles\Stellar.vsf ^
+  Styles\Zircon.vsf
 ```
-without any other function, for InnoSetup versions of:<br>
-Inno Setup 6.3.3: https://github.com/jrsoftware/issrc/releases/tag/is-6_3_3<br>
-and / or<br>
-Inno Setup 6.4.0: https://github.com/jrsoftware/issrc/releases/tag/is-6_4_0<br>
-because you wrote:<br>
-`".Items" should work.`<br>
-https://groups.google.com/g/innosetup/c/SPdiBzDnQ8w/m/pHuTRCeiBAAJ<br>
-![jordanrussell](https://github.com/user-attachments/assets/027552ab-be51-47c1-8dcd-d7b03cf43dad)<br>
-If you don't know I will tell you:<br>
-no you can't get single Component/Task name from the `TNewCheckListBox->Items` class. I know because I already did it without any external tools and/or dlls, also without recompiling whole InnoSetup, even without asking anyone in the internet, or the official InnoSetup forum:<br>
-https://github.com/Wilenty/VisualC-redist-installers-Demos<br>
-*I only recompiled it to include the TGroupBox class, because even of many requests on official InnoSetup forum you not wiling to include it, but you were added the VclStyles classes that few people uses, but VclStyles classes significantly swelling installer base files.*<br>
-So, it's a untrue and you even don't know how your product works at the client side.
 
-https://github.com/martijnlaan<br>
-`Please note that our request for commercial users to purchase a license applies regardless of version, so the statement above is not correct.`<br>
-https://groups.google.com/g/innosetup/c/ZKOt0i4H3c8/m/WHITIgGRAgAJ<br>
-![martijnlaan](https://github.com/user-attachments/assets/df9159e4-74d8-489c-83ec-40421f83d49c)<br>
-So it's a "request", or isn't a "request"? You're forcing users who making any money by using InnoSetup to pay for all versions of InnoSetup, even Free versions shared before for absolutely Free as a DonationWare, to pay a License: "regardless of version". At the same time you deny that the previous versions were free: "so the statement above is not correct". So, you're trying to redefine the Free versions of already posted/shared InnoSetup releases that was absolutely Free.<br>
-The law does not apply retroactively, but I see you think differently. So I will tell you something.<br>
-Let's say you have an old gas-kitchen, you tried to sell it, but there is no interest in buying it. So you gave it to me for free, but in mean time I opened a street-food and I used your old gas-kitchen to make all of those eats. But after a year you're saying that I have to pay you 1000000€, because I used it to make money. That's your logic.<br>
-So, following your line of reasoning, because you used my knowledge (and solution), shared to you for free, included in the InnoSetup to get money without my consent, please pay me for all past months, as well in the future months. I expect you to pay me just as you expect to be paid from others.
+When using Delphi 13.1 or newer, also run:
+```
+cd /d "%BDS%"
+"%ProgramFiles%\7-Zip\7z.exe" a -mx9 -mem=AES256 -p"<password>" ^
+  %USERPROFILE%\issrc-build-env.zip ^
+  bin64\cgrc.exe bin64\resinator.exe
+```
 
-https://github.com/jrsoftware/issrc/blob/is-7_0_1/Projects/Src/Shared.LicenseFunc.pas#L256<br>
-or<br>
-https://github.com/jrsoftware/issrc/blob/main/Projects/Src/Shared.LicenseFunc.pas#L256<br>
-and<br>
-https://github.com/jrsoftware/issrc/blob/is-7_0_1/Projects/ISCC.dpr#L588<br>
-or<br>
-https://github.com/jrsoftware/issrc/blob/main/Projects/ISCC.dpr#L588<br>
-and<br>
-https://github.com/jrsoftware/issrc/blob/is-7_0_1/Projects/Src/IDE.MainForm.pas#L1544<br>
-or<br>
-https://github.com/jrsoftware/issrc/blob/main/Projects/Src/IDE.MainForm.pas#L1544
+Then, upload this encrypted file somewhere public. After that, add its URL as a new repository
+[secret] (at https://github.com/YOUR-USER-NAME/issrc/settings/secrets/actions), under the name
+`ISSRC_BUILD_ENV_ZIP_URL`, and the password as `ISSRC_BUILD_ENV_ZIP_PASSWORD`.
 
-And what about InnoSetup forks, and other InnoSetup sources modifications, and above `All commercial users of Inno Setup are requested to purchase a commercial license.` on InnoSetup website and the line `    Result := 'Non-commercial use only';` in the Shared.LicenseFunc.pas#L256 file? <br>
-Since I was unable to find any information regarding the licensing of forks and modifications of the InnoSetup program.<br>
-So, if I modify InnoSetup source and compile it myself then commercial users have to pay to you, or I can change the license to completely free?
+Finally, indicate that your fork of the repository has those secrets, by adding the
+topic `has-issrc-build-env` (click the gear icon next to the "About" label at
+https://github.com/YOUR-USER-NAME/issrc to add the topic).
 
-On the InnoSetup website quote: `Tiny footprint: only 1.78 MB overhead with all features included.`<br>
-https://jrsoftware.org/isinfo.php<br>
-![isinfo](https://github.com/user-attachments/assets/0edf3e4d-2e31-48fe-b887-e2fff2b2de1b)<br>
-Another untrue, because "empty installer" result size in the official InnoSetup 6.7.2 is: 1,99 MB (bytes: 2 096 171) for x86/32-bit; and with x64/64-bit loader ([Setup] UseSetupLdr=x64): 2,44 MB (bytes: 2 568 235); and based on "Example1.iss": 2,29 MB (bytes: 2 406 437) for x86/32-bit; and with x64/64-bit loader ([Setup] UseSetupLdr=x64): 2,74 MB (bytes: 2 878 501). But in the future version 7 of the InnoSetup base files will be even bigger.<br>
-It's really so hard to update all information, if you already updated other information (including new installer screenshots)?
+Once that's done, you're set! The next time you push a branch to your fork, the
+workflow will be triggered automatically.
 
-https://groups.google.com/g/innosetup/c/XRqmCxUtlE4<br>
-![00](https://github.com/user-attachments/assets/252456c5-99c5-4cdc-8a78-385f834eecac)
+To set up automatic synchronization for your fork, first create a Fine-Grained Personal
+Access Token (at https://github.com/settings/personal-access-tokens) with access to your
+fork or all repositories you own, ensuring it has Read and Write permissions for Contents
+and Workflows. After that, add this token as a new repository secret, under the name
+`ISSRC_BUILD_ENV_SYNC_TOKEN`. Finally, indicate that your fork has this secret, by adding
+the topic `has-issrc-build-env-sync-token`. Workflow **sync-fork.yml** will now
+synchronize your fork daily, and will automatically trigger the aforementioned build
+workflow on changes, if it's configured.
 
-So, untrue are allowed even from owners of the InnoSetup, but strict help with examples directly to the question provided by the post owner are not allowed on Official InnoSetup Forum. Here's a copy of my message/post that was deleted and my account banned. But messages out of the topic, or inappropriate messages like a "shooting in the foot" from your friends are allowed and they still remain untouched - you are fighting with the wrong person guys.<br>
-You don't like me, because I know InnoSetup at the client side better than both of you, or what?
+If you also create PRs to merge `main` or another branch of your choosing into the review
+branches listed below, then the synchronization can also automatically trigger code review
+by Copilot and/or Claude Code. See the setup instructions below. You should then regularly
+fast-forward your review branches to the commit immediately preceding the head of your
+chosen source branch (like `main`). Do not fast-forward to the head of it, as this will
+close your PR and you will not be able to recreate it until another commit is made. After
+fast-forwarding, close and reopen the PR on GitHub to make it display updated information.
 
-https://groups.google.com/g/innosetup/c/xa-DIDMxHnc/m/zQxhLbx2BQAJ<br>
-![03](https://github.com/user-attachments/assets/69dca189-11c4-40d3-9a0b-e3f7f053680d)
+For Copilot reviews, create a PR targeting a branch whose name starts with `copilot-review`.
+No additional setup is needed, except ensuring you actually have access to Copilot reviews.
+Copilot reviews use workflow **code-review-copilot.yml**.
 
-I agree with Bill Stewart: <br>
-`In general, the purpose of this group is for those who write Inno Setup installers to ask questions (and assist fellow Inno Setup developers) regarding Inno Setup itself.`<br>
-and below discussion is also out of the topic, but it's from "forum friends", so its allowed. Better to make a real good clean in this Augean Stable called Official InnoSetup Forum, instead of deleting inconvenient messages.<br>
-For example, question about changing window title of the InnoSetup graphical compiler: https://groups.google.com/g/innosetup/c/bTXePi3M8So/m/BApjunfiAQAJ<br>
-but, answer suggesting about using InnoSetup command-line compiler instead: https://groups.google.com/g/innosetup/c/bTXePi3M8So/m/Zz_V0V4UAgAJ<br>
-So, please answer where or what is the connection between those two posts/messages writing about two different programs?
+For Claude Code reviews, create a PR targeting a branch whose name starts with `claude-review`.
+Install the [Claude GitHub App] on your fork. Then run `claude setup-token` locally and add
+this token as a new repository secret, under the name `CLAUDE_CODE_OAUTH_TOKEN`. See the
+[Claude Code Action setup guide] for more details. Finally, indicate that your fork has the
+secret, by adding the topic `has-claude-code-oauth-token`. Claude Code reviews use workflow
+**code-review-claude-code.yml**.
 
-https://groups.google.com/g/innosetup/c/y6d2wCdQT5o/m/elt2g9WgAQAJ<br>
-![02](https://github.com/user-attachments/assets/ee69a4fd-8e05-43e7-bb3f-3c5ef4980d35)
+To perform a second unattended build using a different Delphi version, add topic
+`has-issrc-build2-env` and secrets `ISSRC_BUILD2_ENV_ZIP_URL` and
+`ISSRC_BUILD2_ENV_ZIP_PASSWORD`. Unlike the main build, the second build does not produce
+any artifacts. It uses workflow **build2.yml**.
 
-I'll be kind for you, in contrary unlike you, who are fighting me. So please pay me $100 or 100€ for every past months to the time where I shared my knowledge with you to fix the bug of your program with icon overwrites. So please, pay me $100 or €100 for each month that has passed since I shared my knowledge with you to fix the bug in your programme that was overwriting icons. If you don't do this voluntarily, I will demand the full amount i.e. $1000 or €1000 for every of the past months instead of $100 or €100 of my kindness. And also please regular payments of $1000 or 1000€ on every future month starting from now on any of my support pages, because you are getting money by using my knowledge (and the solution), shared to you for free, and I didn't agree to use my solution to making money.
-
-I have our email exchange regarding passing on my knowledge (and solution) to you on how to overwrite icons, so I can show it (publicly) if you wish.
-
-You don't think just simply like a human being you should break the contract about the code, and ask all persons who shared their knowledge with you if they agree to use their solutions for making money by others?<br>
-By the way, some of my works done in the InnoSetup have thousand lines of code, so it wouldn't be easy to move all of the works to another installer without wasting a lot of money and/or time.<br>
-Dude, you changed the rules when people played your game - that's not OK, whatever you think about it.
-
-I shared my knowledge to you only because InnoSetup was FREE for ALL. Maybe there are more people/persons like me, but they afraid to tell/write it publicly.
-
-Take a look back at your work over the years:<br>
-https://github.com/jrsoftware/issrc/blob/is-5_5_5/ishelp/isxclasses.pas#L116<br>
-https://github.com/jrsoftware/issrc/blob/is-6_0_0/ISHelp/isxclasses.pas#L116<br>
-https://github.com/jrsoftware/issrc/blob/is-6_0_5/ISHelp/isxclasses.pas#L116<br>
-https://github.com/jrsoftware/issrc/blob/is-6_1_2/ISHelp/isxclasses.pas#L116<br>
-https://github.com/jrsoftware/issrc/blob/is-6_2_2/ISHelp/isxclasses.pas#L116<br>
-https://github.com/jrsoftware/issrc/blob/is-6_3_3/ISHelp/isxclasses.pas#L116<br>
-https://github.com/jrsoftware/issrc/blob/is-6_7_2/ISHelp/isxclasses.pas#L144<br>
-https://github.com/jrsoftware/issrc/blob/is-7_0_0/ISHelp/isxclasses.pas#L162<br>
-https://github.com/jrsoftware/issrc/blob/main/ISHelp/isxclasses.pas#L162<br>
-**TCanvas = class(TPersistent)**<br>
-(...)<br>
-`	property Pixels: Integer Integer Integer; read write;`<br>
-So many eyes looking at the InnoSetup open source code, but your work still includes eyes-popping mistakes. It's only a example, there are more such simple and non-reported bugs.
-
-Also, look at the other nonsense you wrote: <br>
-`The blockage is to make it a little more difficult to write self installing malware installers using Inno Setup.`<br>
-https://groups.google.com/g/innosetup/c/XRqmCxUtlE4/m/P-2oPhAPBQAJ<br>
-![01](https://github.com/user-attachments/assets/1ac4fc6d-bacd-428e-878a-0a11add804c6)<br>
-What a total absurd would be to create `self installing malware installers using InnoSetup` like you wrote, if the InnoSetup base files are unnecessarily bloated? There is a program called NSIS that is much smaller, much more extensible, and far surpasses the functionality of InnoSetup, and has many and many free plugins created by the community, but much more difficult. So, "easy" not always equals "better".<br>
-By the way, it's already made `self installing installers using InnoSetup` without the "malware" word from your quote. Download below example, look at the *.cmd files and use it:<br>
-https://github.com/Wilenty/VisualC-redist-installers-Demos/releases<br>
-So it's possible to create the `self installing installers using InnoSetup`, in any version of InnoSetup. Above command-line parameters change behaviour of the whole installer, so it would be `self installing installers using InnoSetup` without any command-line parameters, if I wanted to.<br>
-I will repeat it again, I don't need to recompile whole InnoSetup for create `self installing installers using InnoSetup` (without the "malware" word).<br>
-*But, maybe did you mean the "self copying malware installers using InnoSetup"? Same as before - base files are too big to be a usable malware or virus made in the official InnoSetup.*<br>
-So, you are looking for a hole without a hole.
-
-https://groups.google.com/g/innosetup/c/fNDrkcdJnHg/m/MurZ2uilAAAJ<br>
-![InnoSetupBugs/2024.png](InnoSetupBugs/2024.png)
-
-A while ago, you asked us to report any issues we found (as soon as possible), but when do you intend to fix this critical bug that I reported on your forum back in 2022?
-
-Here is simple-as-possible example: https://github.com/Wilenty/issrc/blob/main/InnoSetupBugs/4.iss
-
-![InnoSetupBugs/2022.png](InnoSetupBugs/2022.png)
-
-### In summary
-
-1. I shared my knowledge (and solution) for free to fix the issue with icons being overwritten, simply because InnoSetup was available to everyone for free at the time.<br>
-2. I don’t agree with you using my knowledge (and solution) I’ve shared with you for free to make money – you should either share your work for free or pay me for my contribution, given that you yourself expect to be paid for your work.<br>
-3. Please pay $100 or €100 for each past month in which you have benefited from my knowledge (and my solution). If you do not do so voluntarily, I will demand the full amount, i.e. $1,000 or €1,000 for each of the past months.<br>
-4. Please pay me $1000 or 1000€ in every future month from now on, because you are sharing InnoSetup for money, and forcing companies to pay for a license, because you're getting money using my knowledge shared to you for Free, without my consent.<br>
-5. When do you intend to fix this serious bug in InnoSetup, which I reported on your forum in 2022?  Look also at the: https://github.com/Wilenty/issrc/raw/refs/heads/main/InnoSetupBugs/Puzzling%20operation%20of%20InnoSetup.7z<br>
-6. Please compile it without the "PS_MINIVCL" constant/variable to include already existing TGroupBox/TRadioGroup/etc. classes you were asked many times, even on your forum. You’ve added another external VclStyles classes (that cause the base program files to become unnecessarily bloated, that are rarely used), but still you didn't include already existing classes you were asked.<br>
-7. I will think to publish more InnoSetup bugs when I have overdue payments on my account and you will fix critical bug mentioned above.
-
-Don't you think the whole sources of the InnoSetup should be deeply reviewed, instead of making partially changes like a painting the wall with a buckets of various paints?
-
-![260.img](https://github.com/user-attachments/assets/68c72355-ac06-4027-b628-a9890e7a90d0)<br>
-Sorry, but where have you been for the last (about) 15 years?<br>
-https://github.com/jrsoftware/issrc/blob/main/license.txt#L8
-
-Greetings,<br>
-Wilenty
-
-P.S.<br>
-I’m writing this here so that you can’t (easily) delete my message, and I know you’ll receive notifications about my message to you.<br>
+<!-- Link references -->
+[CONTRIBUTING.md]: <CONTRIBUTING.md>
+[Projects\Bin]: <Projects/Bin>
+[Components]: <Components>
+[Files]: <Files>
+[Projects\Src\Compression.LZMACompressor\islzma]: <Projects/Src/Compression.LZMACompressor/islzma>
+[Examples\MyDll]: <Examples/MyDll/Delphi>
+[Examples\MyProg]: <Examples/MyProg>
+[Projects\Src]: <Projects/Src>
+[Projects\Src\Compression.LZMADecompressor\Lzma2Decode]: <Projects/Src/Compression.LZMADecompressor/Lzma2Decode>
+[Projects\Src\Compression.LZMA1SmallDecompressor\LzmaDecode]: <Projects/Src/Compression.LZMA1SmallDecompressor/LzmaDecode>
+[Projects\Src\Compression.SevenZipDecoder\7zDecode]: <Projects/Src/Compression.SevenZipDecoder/7zDecode>
+[7-Zip]: https://www.7-zip.org/
+[secret]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
+[this public key file]: https://files.jrsoftware.org/is/misc/def01.ispublickey
+[is7z]: https://github.com/jrsoftware/is7z
+[iscompress]: https://github.com/jrsoftware/iscompress
+[isscint]: https://github.com/jrsoftware/isscint
+[Claude GitHub App]: https://github.com/apps/claude
+[Claude Code Action setup guide]: https://github.com/anthropics/claude-code-action/blob/main/docs/setup.md
