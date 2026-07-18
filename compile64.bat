@@ -47,7 +47,7 @@ if errorlevel 1 goto failed
 
 echo - ISIDE.dpr
 mkdir Dcu\ISIDE.dpr 2>nul
-"%DELPHIXEROOT%\bin\dcc64.exe" --no-config -NSSystem;System.Win;Winapi;Vcl;Vcl.Imaging -Q -B -H -W %DELPHIXEDISABLEDWARNINGS% -U"%DELPHIXEROOT%\lib\win64\release;..\Components\UniPs\Source" -E..\Files64 -NUDcu\ISIDE.dpr -DISIDEPROJ;PS_NOGRAPHCONST;PS_NOINTERFACEGUIDBRACKETS ISIDE.dpr
+"%DELPHIXEROOT%\bin\dcc64.exe" --no-config -NSSystem;System.Win;Winapi;Vcl;Vcl.Imaging -Q -B -H -W %DELPHIXEDISABLEDWARNINGS% -U"%DELPHIXEROOT%\lib\win64\release;..\Components\UniPs\Source" -E..\Files64 -NUDcu\ISIDE.dpr -DISIDEPROJ;VCLSTYLES;PS_NOGRAPHCONST;PS_NOINTERFACEGUIDBRACKETS ISIDE.dpr
 if errorlevel 1 (
 if not exist ISIDE.res cls& echo.	execute the "GetIT64.exe" or "GetIT32.exe" to get the styles from official InnoSetup
 goto failed
@@ -75,7 +75,7 @@ if errorlevel 1 goto failed
 
 echo - SetupCustomStyle.dpr
 mkdir Dcu\SetupCustomStyle.dpr 2>nul
-"%DELPHIXEROOT%\bin\dcc64.exe" --no-config -NSsystem;system.win;winapi;vcl;vcl.imaging -Q -B -W %DELPHIXEDISABLEDWARNINGS% -U"%DELPHIXEROOT%\lib\win64\release;..\Components;..\Components\UniPs\Source" -E..\Files64 -NUDcu\SetupCustomStyle.dpr -DSETUPPROJ;PS_NOGRAPHCONST;PS_NOINTERFACEGUIDBRACKETS SetupCustomStyle.dpr
+"%DELPHIXEROOT%\bin\dcc64.exe" --no-config -NSsystem;system.win;winapi;vcl;vcl.imaging -Q -B -W %DELPHIXEDISABLEDWARNINGS% -U"%DELPHIXEROOT%\lib\win64\release;..\Components;..\Components\UniPs\Source" -E..\Files64 -NUDcu\SetupCustomStyle.dpr -DSETUPPROJ;VCLSTYLES;PS_NOGRAPHCONST;PS_NOINTERFACEGUIDBRACKETS SetupCustomStyle.dpr
 if errorlevel 1 (
 if not exist SetupCustomStyle.res cls& echo.	execute the "GetIT64.exe" or "GetIT32.exe" to get the styles from official InnoSetup
 goto failed

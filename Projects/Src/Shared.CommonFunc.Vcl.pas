@@ -357,7 +357,7 @@ begin
         const Typ = (Flags and MB_TYPEMASK);
         const MB_CANCELTRYCONTINUE = $00000006;
         if (Typ <> Cardinal(MB_ABORTRETRYIGNORE)) and (Typ <> Cardinal(MB_CANCELTRYCONTINUE)) then begin
-          const LStyle = TStyleManager.ActiveStyle;
+          const LStyle = StyleServices;
           if not LStyle.IsSystemStyle then begin
             var Icon: PChar;
             var TDCommonButtons: Cardinal;
