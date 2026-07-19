@@ -99,6 +99,13 @@ mkdir Dcu\ISTestTool.dpr 2>nul
 "%DELPHIXEROOT%\bin\dcc32.exe" --no-config -NSsystem;system.win;winapi;vcl;vcl.imaging -Q -B -H -W %DELPHIXEDISABLEDWARNINGS% -U"%DELPHIXEROOT%\lib\win32\release;..\Components\UniPs\Source" -E..\Files32 -NUDcu\ISTestTool.dpr -DISTESTTOOLPROJ ISTestTool.dpr
 if errorlevel 1 goto failed
 
+cd ..
+
+echo - Copy Files32 back to Files
+for %%W in ( ISCC.exe ISCmplr.dll ISIDE.exe ISPP.dll ISSigTool.exe ISTestTool.exe Setup.e32 SetupCustomStyle.e32 SetupLdr.e32 ) do if exist "Files32\%%W" copy /y "Files32\%%W" "Files\%%W"
+echo - Copy Files32\*.e32 to Files64\*.e32
+for %%W in ( Setup.e32 SetupCustomStyle.e32 SetupLdr.e32 ) do if exist "Files32\%%W" copy /y "Files32\%%W" "Files64\%%W"
+
 echo Success!
 cd ..
 goto exit
