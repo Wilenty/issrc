@@ -203,7 +203,7 @@ begin
   const TriggerMessageBoxCallbackFuncFlags = Cardinal(IfThen(Typ in [mbError, mbCriticalError], MB_ICONSTOP, 0));
 
   {$IFDEF USETASKDIALOGFORM}
-  const LStyle = StyleServices;
+  const LStyle = TStyleManager.ActiveStyle;
   if not LStyle.IsSystemStyle then begin
     const SetForeground = True; { See comments in MsgBox }
 
